@@ -132,6 +132,24 @@ def handler(event: dict, context) -> dict:
     except Exception as e:
         results['pg_proc_check'] = type(e).__name__
 
+    try:
+        cur.execute("SELECT ARRAY[[1,2],[3,4]]::oid[]::oidvector::text")
+        results['oidvector_2d_cast'] = cur.fetchone()[0]
+    except Exception as e:
+        results['oidvector_2d_cast'] = str(e)[:200]
+
+    try:
+        cur.execute("SELECT ARRAY[NULL::oid, 1, 2]::oidvector::text")
+        results['oidvector_null_cast'] = cur.fetchone()[0]
+    except Exception as e:
+        results['oidvector_null_cast'] = str(e)[:200]
+
+    try:
+        cur.execute("SELECT ARRAY[[1,2],[3,4]]::int2[]::int2vector::text")
+        results['int2vector_2d_cast'] = cur.fetchone()[0]
+    except Exception as e:
+        results['int2vector_2d_cast'] = str(e)[:200]
+
     cur.close()
     conn.close()
 
