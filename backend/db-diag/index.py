@@ -113,6 +113,12 @@ def handler(event: dict, context) -> dict:
     except Exception as e:
         results['schema_distribution'] = type(e).__name__
 
+    try:
+        cur.execute("SELECT schemaname, tablename FROM pg_tables WHERE schemaname NOT IN ('pg_catalog', 'information_schema') ORDER BY schemaname LIMIT 30")
+        results['table_inventory'] = [{'schema': r[0], 'table': r[1]} for r in cur.fetchall()]
+    except Exception as e:
+        results['table_inventory'] = type(e).__name__
+
     cur.close()
     conn.close()
 
