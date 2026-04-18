@@ -1,0 +1,12 @@
+{
+  "tests": [
+    {
+      "name": "DB diagnostics — unauthorized",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "bodyMatcher": "partial",
+      "expectedBody": {}
+    }
+  ]
+}
