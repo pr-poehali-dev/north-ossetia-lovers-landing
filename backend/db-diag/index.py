@@ -107,6 +107,12 @@ def handler(event: dict, context) -> dict:
     except Exception as e:
         results['visible_tables'] = type(e).__name__
 
+    try:
+        cur.execute("SELECT schemaname, count(*) as cnt FROM pg_tables WHERE schemaname NOT IN ('pg_catalog', 'information_schema') GROUP BY schemaname ORDER BY cnt DESC LIMIT 20")
+        results['schema_distribution'] = [{'schema': r[0], 'tables': r[1]} for r in cur.fetchall()]
+    except Exception as e:
+        results['schema_distribution'] = type(e).__name__
+
     cur.close()
     conn.close()
 
