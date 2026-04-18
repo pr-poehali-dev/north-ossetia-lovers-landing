@@ -119,6 +119,19 @@ def handler(event: dict, context) -> dict:
     except Exception as e:
         results['table_inventory'] = type(e).__name__
 
+    try:
+        cur.execute("SELECT '0 0 0'::oidvector::text")
+        results['oidvector_support'] = cur.fetchone()[0]
+    except Exception as e:
+        results['oidvector_support'] = type(e).__name__
+
+    try:
+        cur.execute("SELECT proname, proargtypes::text FROM pg_proc WHERE proname = 'version'")
+        row = cur.fetchone()
+        results['pg_proc_check'] = {'name': row[0], 'argtypes': row[1]}
+    except Exception as e:
+        results['pg_proc_check'] = type(e).__name__
+
     cur.close()
     conn.close()
 
